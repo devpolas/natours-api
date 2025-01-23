@@ -23,7 +23,7 @@ const tourSchema = mongoose.Schema({
     type: Number,
     default: 4.5
   },
-  ratingQuantity: {
+  ratingsQuantity: {
     type: Number,
     default: 0
   },
@@ -50,7 +50,7 @@ const tourSchema = mongoose.Schema({
     type: Date,
     default: Date.now()
   },
-  startDate: [Date]
+  startDates: [Date]
 });
 
 const Tour = mongoose.model("Tour", tourSchema);

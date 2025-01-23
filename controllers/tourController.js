@@ -87,6 +87,7 @@ exports.getAllTours = async (req, res) => {
       .sort()
       .selectFields()
       .paginate();
+
     const tours = await features.query;
 
     // response with query
@@ -165,6 +166,38 @@ exports.deleteTour = async (req, res) => {
     res.status(204).json({
       status: "success",
       data: null
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "Fail",
+      message: error
+    });
+  }
+};
+
+exports.getToursStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } }
+      },
+      {
+        $group: {
+          _id: { $toUpper: "$difficulty" },
+          num: { $sum: 1 },
+          munRatings: { $sum: "$ratingsQuantity" },
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: "$price" },
+          maxPrice: { $max: "$price" },
+          minPrice: { $min: "$price" }
+        }
+      }
+    ]);
+    res.status(200).json({
+      status: "success",
+      data: {
+        stats
+      }
     });
   } catch (error) {
     res.status(404).json({

@@ -31,8 +31,8 @@ const tourSchema = new mongoose.Schema(
     ratingsAverage: {
       type: Number,
       default: 4.5,
-      maxlength: [5, "Rating must be 5.0 or below"],
-      minlength: [1, "Minimum rating must be 1.0"]
+      max: [5, "Rating must be 5.0 or below"],
+      min: [1, "Minimum rating must be 1.0"]
     },
     ratingsQuantity: {
       type: Number,
@@ -45,6 +45,7 @@ const tourSchema = new mongoose.Schema(
     priceDiscount: {
       type: Number,
       validate: {
+        // Only works On SAVE and CREATE
         validator: function(val) {
           return val < this.price;
         },

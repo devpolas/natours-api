@@ -8,11 +8,26 @@ router.route("/signup").post(authControllers.signup);
 router.route("/login").post(authControllers.login);
 router.route("/forgetPassword").post(authControllers.forgetPassword);
 router.route("/resetPassword/:token").patch(authControllers.resetPassword);
+router
+  .route("/updatePassword")
+  .patch(authControllers.protect, authControllers.updatePassword);
+
+router
+  .route("/updateMe")
+  .patch(authControllers.protect, userControllers.updateMe);
 
 router
   .route("/")
-  .get(userControllers.getAllUsers)
-  .post(userControllers.createUser);
+  .get(
+    authControllers.protect,
+    authControllers.restrictTo("admin"),
+    userControllers.getAllUsers
+  )
+  .post(
+    authControllers.protect,
+    authControllers.restrictTo("admin"),
+    userControllers.createUser
+  );
 
 router
   .route("/:id")

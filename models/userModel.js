@@ -78,7 +78,6 @@ userSchema.methods.correctCredential = async function (
 userSchema.methods.afterChangedPassword = function (JWTTimeStamp) {
   if (this.createAt) {
     const changeTimeStamp = parseInt(this.createAt.getTime() / 1000, 10);
-    console.log(changeTimeStamp, JWTTimeStamp);
     return JWTTimeStamp < changeTimeStamp;
   }
   // default return false. user not changed password

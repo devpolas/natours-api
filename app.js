@@ -5,13 +5,12 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const qs = require("qs");
 const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 const { rateLimit } = require("express-rate-limit");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
 const globalErrorController = require("./controllers/globalErrorController");
-
-const morgan = require("morgan");
 
 const app = express();
 

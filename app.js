@@ -9,6 +9,7 @@ const morgan = require("morgan");
 const { rateLimit } = require("express-rate-limit");
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
+const reviewRouter = require("./routes/reviewRouter");
 const AppError = require("./utils/appError");
 const globalErrorController = require("./controllers/globalErrorController");
 
@@ -17,7 +18,7 @@ const app = express();
 // Global middleware
 app.use(helmet()); // secure http headers
 app.use(cookieParser()); //enable cookie parser
-app.set("query parser", "extended");
+// app.set("query parser", "extended");
 
 // set request limit with express-rate-limit
 const limiter = rateLimit({
@@ -29,13 +30,14 @@ const limiter = rateLimit({
 app.use(limiter);
 //use for body parser req.body default return undefined and set limit max 10kb
 app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Data Sanitization against NoSQL query injection {"email":{$gt: ""}, "password":"correctAnyUserPassword"}
-app.use(mongoSanitize());
+// app.use(mongoSanitize({ allowDots: true }));
 
 // Data Sanitization against XSS (xcross site scripting attracts)
 // make sure this comes before any routes
-app.use(xss());
+// app.use(xss());
 
 // prevent http parameter pollution
 // some parameter keep on whiteList
@@ -63,6 +65,7 @@ app.use(express.static(`${__dirname}/public`));
 //define routes
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 // handle all unreachable route
 // express 4 "*" to replace "/*splat"

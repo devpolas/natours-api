@@ -1,6 +1,7 @@
 const User = require("./../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const factory = require("./factoryController");
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
@@ -22,6 +23,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
+// this route perform with admin
 exports.createUser = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -47,12 +49,8 @@ exports.updateUser = (req, res) => {
   });
 };
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "server error",
-    message: "Fail to read data from server",
-  });
-};
+// this function perform with admin
+exports.deleteUser = factory.deleteOne(User);
 
 // filter other property without name and email
 const filterObj = (obj, ...allowedFields) => {

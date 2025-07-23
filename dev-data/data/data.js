@@ -1,25 +1,23 @@
-require('@dotenvx/dotenvx').config();
-const fs = require('fs');
-const mongoose = require('mongoose');
-const Tour = require('./../../models/tourModel');
+require("@dotenvx/dotenvx").config();
+const fs = require("fs");
+const mongoose = require("mongoose");
+const Tour = require("./../../models/tourModel");
 
 const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
+  "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
 
 mongoose.connect(DB).then((con) => {
-  console.log('database connection successful!');
+  console.log("database connection successful!");
 });
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));
 
 const insertTours = async () => {
   try {
     await Tour.create(tours);
-    console.log('Tour Data Insert Successfully!');
+    console.log("Tour Data Insert Successfully!");
     process.exit();
   } catch (err) {
     console.log(err);
@@ -29,20 +27,20 @@ const insertTours = async () => {
 const deleteTours = async () => {
   try {
     await Tour.deleteMany();
-    console.log('Tour Data Deleted Successfully!');
+    console.log("Tour Data Deleted Successfully!");
     process.exit();
   } catch (err) {
     console.log(err);
   }
 };
 
-if (process.argv[2] === '--import') {
+if (process.argv[2] === "--import") {
   insertTours();
-} else if (process.argv[2] === '--delete') {
+} else if (process.argv[2] === "--delete") {
   deleteTours();
 } else {
   console.log(
-    'use like this syntax: node dev-data/data/data.js --import || --delete'
+    "use like this syntax: node dev-data/data/data.js --import || --delete"
   );
   process.exit();
 }

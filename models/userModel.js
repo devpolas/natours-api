@@ -43,7 +43,10 @@ const userSchema = new mongoose.Schema({
     maxLength: [32, "Password maximum 32 character!"],
   },
   image: String,
-  createAt: Date,
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
   passwordResetToken: String,
   passwordResetTokenExpire: Date,
   active: {

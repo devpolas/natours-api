@@ -1,3 +1,4 @@
+const User = require("./userModel");
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
@@ -23,8 +24,8 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       enum: {
-        values: ["easy", "medium", "hard"],
-        message: `"{VALUE}" not supported You should choose either "easy", "medium", "hard"`,
+        values: ["easy", "medium", "hard", "difficult"],
+        message: `"{VALUE}" not supported You should choose either "easy", "medium", "hard", "difficult"`,
       },
       required: [true, "A Tour must have a difficulty!"],
     },
@@ -84,6 +85,35 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+      },
+    ],
+    // guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -91,8 +121,15 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// virtual property for tour modal
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
+});
+
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "tour",
+  localField: "_id",
 });
 
 // Document pre middleware run on .save() and .create(). other type of middleware like post
@@ -101,11 +138,26 @@ tourSchema.pre("save", function (next) {
   next();
 });
 
+//* embed document with mongoose pre middleware
+// tourSchema.pre("save", async function (next) {
+//   const guidesPromise = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromise);
+
+//   next();
+// });
+
+// Query middleware
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   next();
 });
 
+tourSchema.pre(/^find/, function (next) {
+  this.populate({ path: "guides", select: "-__v -createAt" });
+  next();
+});
+
+// aggregate middleware
 tourSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();

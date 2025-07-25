@@ -21,12 +21,12 @@ router
   .delete(authControllers.protect, userControllers.deleteMe);
 
 router
+  .route("/me")
+  .get(authControllers.protect, userControllers.getMe, userControllers.getUser);
+
+router
   .route("/")
-  .get(
-    authControllers.protect,
-    authControllers.restrictTo("admin"),
-    userControllers.getAllUsers
-  )
+  .get(userControllers.getAllUsers)
   .post(
     authControllers.protect,
     authControllers.restrictTo("admin"),
@@ -36,7 +36,11 @@ router
 router
   .route("/:id")
   .get(userControllers.getUser)
-  .patch(userControllers.updateUser)
+  .patch(
+    authControllers.protect,
+    authControllers.restrictTo("admin"),
+    userControllers.updateUser
+  )
   .delete(
     authControllers.protect,
     authControllers.restrictTo("admin"),

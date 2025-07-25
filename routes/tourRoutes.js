@@ -14,13 +14,13 @@ router.use("/:tourId/reviews", reviewRouter);
 
 router
   .route("/")
-  .get(authControllers.protect, tourControllers.getAllTours)
-  .post(tourControllers.createNewTour);
+  .get(tourControllers.getAllTours)
+  .post(authControllers.protect, tourControllers.createNewTour);
 
 router
   .route("/:id")
   .get(tourControllers.getTour)
-  .patch(tourControllers.updateTour)
+  .patch(authControllers.protect, tourControllers.updateTour)
   .delete(
     authControllers.protect,
     authControllers.restrictTo("admin", "lead-guide"),

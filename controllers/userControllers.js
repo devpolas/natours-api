@@ -3,25 +3,29 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const factory = require("./factoryController");
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-  res.status(200).json({
-    status: "success",
-    data: {
-      users,
-    },
-  });
-});
+// exports.getAllUsers = catchAsync(async (req, res, next) => {
+//   const users = await User.find();
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       users,
+//     },
+//   });
+// });
 
-exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById({ _id: req.params.id });
-  res.status(200).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
+
+// exports.getUser = catchAsync(async (req, res, next) => {
+//   const user = await User.findById({ _id: req.params.id });
+//   res.status(200).json({
+//     status: "success",
+//     data: {
+//       user,
+//     },
+//   });
+// });
+
+exports.getUser = factory.getOne(User);
 
 // this route perform with admin
 exports.createUser = catchAsync(async (req, res, next) => {
@@ -42,14 +46,8 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: "server error",
-    message: "Fail to read data from server",
-  });
-};
-
 // this function perform with admin
+exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
 
 // filter other property without name and email
@@ -94,3 +92,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};

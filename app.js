@@ -18,7 +18,9 @@ const app = express();
 // Global middleware
 app.use(helmet()); // secure http headers
 app.use(cookieParser()); //enable cookie parser
-// app.set("query parser", "extended");
+
+// make query writeable
+app.set("query parser", "extended");
 
 // set request limit with express-rate-limit
 const limiter = rateLimit({
@@ -31,6 +33,8 @@ app.use(limiter);
 //use for body parser req.body default return undefined and set limit max 10kb
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
+
+//express req.query is immutable now writeable after adding this line of code
 
 // Data Sanitization against NoSQL query injection {"email":{$gt: ""}, "password":"correctAnyUserPassword"}
 // app.use(mongoSanitize({ allowDots: true }));

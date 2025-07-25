@@ -8,8 +8,7 @@ class APIFeatures {
     const queryObject = { ...this.queryString };
 
     //! ignoring excludesFields form query
-
-    const excludesFields = ['limit', 'page', 'sort', 'fields'];
+    const excludesFields = ["limit", "page", "sort", "fields"];
     excludesFields.forEach((el) => delete queryObject[el]);
 
     //! Advance Query
@@ -28,7 +27,7 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
+      const sortBy = this.queryString.sort.split(",").join(" ");
       this.query = this.query.sort(sortBy);
     } else {
       // query = query.sort('-createdAt');
@@ -38,10 +37,10 @@ class APIFeatures {
 
   limitFields() {
     if (this.queryString.fields) {
-      const fields = this.queryString.fields.split(',').join(' ');
+      const fields = this.queryString.fields.split(",").join(" ");
       this.query = this.query.select(fields);
     } else {
-      this.query = this.query.select('-__v');
+      this.query = this.query.select("-__v");
     }
     return this;
   }

@@ -152,6 +152,7 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+//Populate middleware
 tourSchema.pre(/^find/, function (next) {
   this.populate({ path: "guides", select: "-__v -createAt" });
   next();
